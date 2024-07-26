@@ -2,20 +2,23 @@
 
 import useComentarios from "@/app/data/comentarios";
 import styles from './page.module.css';
-import { useRouter } from 'next/navigation';
+import Loader from "@/app/components/loader/loader";
+import { Comentario } from "@/app/types/comentario";
+import Boton from "@/app/components/boton/boton";
+import { useState } from "react";
 
 export default function Page({ params }: { params: { nro: string } }) {
-
   const { nro } = params;
-  const { comentarios, loading } = useComentarios(nro);
-  const router = useRouter();
+  const { comentarios } = useComentarios(nro);
+  const rutaPaginaPrincipal: string = process.env.NEXT_PUBLIC_RUTA_PRINCIPAL ?? "";
 
-  const volverPublicaciones = () => {
-    router.push('/pagina_principal');
-  };
+  const [cargando, setCargando] = useState(true);
+  setTimeout(() => {
+    setCargando(false);
+  }, 3000);
 
-  if (loading) {
-    return <div className={styles.cargando}>Cargando comentarios...</div>;
+  if (comentarios.length == 0 && cargando == true) {
+    return <Loader></Loader>
   }
 
   if (comentarios.length > 0) {
@@ -25,7 +28,7 @@ export default function Page({ params }: { params: { nro: string } }) {
           <h2 className={styles.title}>Comentarios</h2>
           <div className={styles.comentarios}>
 
-            {(comentarios).map((comentario: any) => (
+            {(comentarios).map((comentario: Comentario) => (
               <div key={comentario.id} className={styles.comentario}>
                 <p className={styles.emailUsuario}>{comentario.email}</p>
                 <p className={styles.nombreComentario}>{comentario.name}</p>
@@ -34,7 +37,7 @@ export default function Page({ params }: { params: { nro: string } }) {
             ))}
 
           </div>
-          <button className={styles.botonVolver} onClick={volverPublicaciones}>Volver a publicaciones</button>
+          <Boton ruta={rutaPaginaPrincipal}></Boton>
         </div>
       </div>
     )
@@ -42,8 +45,8 @@ export default function Page({ params }: { params: { nro: string } }) {
   else {
     return (
       <>
-        <div className={styles.cargando}>No existe la publicación...</div>
-        <button className={styles.botonVolver} onClick={volverPublicaciones}>Volver a publicaciones</button>
+        <div className={styles.texto}>No existe la publicación...</div>
+        <Boton ruta={rutaPaginaPrincipal}></Boton>
       </>
     )
   }

@@ -4,6 +4,6 @@
 2. Seguidamente ejecutar el proyecto mediante el comando "npm run dev"
 3. Dirigirse a la dirección: "http://localhost:3000", mediante el navegador de su preferencia.
 
-## Autor: 
+## Autor 
 
 Andres John Velarde Quispe

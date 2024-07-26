@@ -6,10 +6,15 @@ import imagen_b from '../../assets/imagenes/buscar.jpg';
 import Image from 'next/image';
 import { useEffect, useState } from "react";
 import { useRouter } from 'next/navigation';
-export default function Page() {
+import useUsuarios from "../data/usuarios";
+import { Usuario } from "../types/usuario";
+import Loader from "../components/loader/loader";
+import { Publicacion } from "../types/publicacion";
 
+export default function Page() {
   const router = useRouter();
-  const { publicaciones, loading } = usePublicaciones();
+  const { publicaciones } = usePublicaciones();
+  const { usuarios } = useUsuarios();
   const publicacionesPorPagina = 10;
   const [paginaActual, setPaginaActual] = useState(1);
   const totalPages = Math.ceil(publicaciones.length / publicacionesPorPagina);
@@ -22,19 +27,33 @@ export default function Page() {
       page * publicacionesPorPagina)
   }
 
+  function obtenerUsuario(id: number) {
+    var nombre = "";
+    if (usuarios) {
+      const usuario: Usuario | undefined = usuarios.find((usuario) => usuario.id == id);
+      if (usuario != undefined) {
+        nombre = usuario.name;
+      }
+    }
+    return nombre;
+  }
+
   // Este fragmento de código permite obtener y visualizar las publicaciones de la primera página.
   useEffect(() => {
     setPublicacionesVisibles(obtenerPublicacionesPorPagina(paginaActual))
   }, [publicaciones]);
 
-   // Este fragmento de código permite obtener y visualizar las publicaciones con título o contenido que coincida con la variable buscar.
+  // Este fragmento de código permite obtener y visualizar las publicaciones con título o 
+  // contenido que coincida con la variable buscar.
   useEffect(() => {
     setPublicacionesVisibles(publicaciones.slice(
       (paginaActual - 1) * publicacionesPorPagina,
       paginaActual * publicacionesPorPagina
     ))
     if (buscar != "") {
-      setPublicacionesVisibles(publicaciones.filter((not) => not.body.toLowerCase().includes(buscar) || not.title.toLowerCase().includes(buscar)).slice((paginaActual - 1) * publicacionesPorPagina, paginaActual * publicacionesPorPagina));
+      setPublicacionesVisibles(publicaciones.filter((publicacion) => publicacion.body.toLowerCase().includes(buscar) ||
+        publicacion.title.toLowerCase().includes(buscar)).slice((paginaActual - 1) *
+          publicacionesPorPagina, paginaActual * publicacionesPorPagina));
     }
   }, [buscar]);
 
@@ -43,12 +62,12 @@ export default function Page() {
     setPublicacionesVisibles(obtenerPublicacionesPorPagina(page))
   };
 
-  const verComentario = (idPublicacion: any) => {
-    router.push('/pagina_principal/'+idPublicacion);
+  const verComentario = (idPublicacion: number) => {
+    router.push('/pagina_principal/' + idPublicacion);
   };
 
-  if (loading) {
-    return <div className={styles.cargando}>Cargando publicaciones...</div>;
+  if (publicaciones.length == 0) {
+    return <Loader></Loader>
   }
 
   return (
@@ -77,7 +96,7 @@ export default function Page() {
         <table className={styles.tabla}>
           <thead>
             <tr>
-              <td className={styles.tabla_encabezado}>Id</td>
+              <td className={styles.tabla_encabezado}>Nro</td>
               <td className={styles.tabla_encabezado}>Título</td>
               <td className={styles.tabla_encabezado}>Descripción</td>
               <td className={styles.tabla_encabezado}>Usuario</td>
@@ -85,13 +104,13 @@ export default function Page() {
           </thead>
 
           <tbody>
-            {(publicacionesVisibles).map((publicacion: any) => (
+            {(publicacionesVisibles).map((publicacion: Publicacion) => (
               <tr key={publicacion.id}
                 onClick={() => verComentario(publicacion.id)}>
                 <td className={styles.tabla_datos_id}>{publicacion.id}</td>
                 <td className={styles.tabla_datos_titulo}>{publicacion.title}</td>
                 <td className={styles.tabla_datos_contenido}>{publicacion.body}</td>
-                <td className={styles.tabla_datos_id}>{publicacion.userId}</td>
+                <td className={styles.tabla_datos_usuario}>{obtenerUsuario(publicacion.userId)}</td>
               </tr>
             ))}
           </tbody>

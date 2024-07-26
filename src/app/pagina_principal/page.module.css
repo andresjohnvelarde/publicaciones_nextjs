@@ -10,15 +10,6 @@
     text-align: center;
 }
 
-.cargando {
-    margin: 12px;
-    line-height: 1.15;
-    font-size: 2rem;
-    text-align: left;
-    color: #111111;
-    font-weight: 500;
-}
-
 .subtitulo {
     text-align: center;
     font-size: 35px;
@@ -72,9 +63,9 @@
     background-color: white;
 }
 
-.tabla tbody tr:hover:nth-child(odd)  {
+.tabla tbody tr:hover:nth-child(odd) {
     background-color: rgba(10, 10, 11, 0.8);
-    color:rgb(245, 245, 245)
+    color: rgb(245, 245, 245)
 }
 
 .tabla tbody tr:nth-child(even) {
@@ -82,9 +73,9 @@
     cursor: pointer;
 }
 
-.tabla tbody tr:hover:nth-child(even)  {
+.tabla tbody tr:hover:nth-child(even) {
     background-color: rgba(10, 10, 11, 0.8);
-    color:rgb(245, 245, 245)
+    color: rgb(245, 245, 245)
 }
 
 .tabla tbody td {
@@ -113,12 +104,18 @@
 
 .tabla_datos_titulo {
     font-size: 15px;
-    width: 40%;
+    width: 30%;
     font-family: 'cursive';
 }
 
 .tabla_datos_contenido {
     width: 40%;
+    font-size: 14px;
+    font-family: 'cursive';
+}
+
+.tabla_datos_usuario {
+    width: 10%;
     font-size: 14px;
     font-family: 'cursive';
 }
